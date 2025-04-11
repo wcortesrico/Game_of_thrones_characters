@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game of Thrones</title>
+</head>
+
+<body>
+    
+    <h1>Game of Thrones Characters</h1>
+
+    <form action="/characters" method="get">
+        <label for="limit">Characters per page:</label>
+        <input type="number" id="limit" name="limit" min="1" value="{{ request.args.get('limit') }}">
+        <button type="submit">Apply</button>
+    </form>
+
+    <form action="/characters" method="get">
+        <label for="skip">Skip:</label>
+        <input type="number" id="skip" name="skip" min="0" value="{{ request.args.get('skip') }}">
+        <button type="submit">Apply</button>
+    </form>
+
+    <div>
+        {% for character in characters %}
+
+        <div>
+            <h2>{{ character.name }}</h2>
+        </div>
+        {% endfor %}
+
+        {% if page > 1 %}
+    <a href="{{ url_for('home', page=page - 1, limit=request.args.get('limit'), skip=request.args.get('skip')) }}">Previous</a>
+        {% endif %}
+
+        <span>Page {{ page }} of {{ total_pages }}</span>
+
+
+        {% if page < total_pages %}
+        <a href="{{ url_for('home', page=page + 1, limit=request.args.get('limit'), skip=request.args.get('skip')) }}"> Next</a>
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>

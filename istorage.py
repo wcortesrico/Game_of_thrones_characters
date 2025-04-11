@@ -2,6 +2,6 @@ from abc import ABC, abstractmethod
 
 class IStorage(ABC):
     @abstractmethod
-    def list_characters(self):
+    def get_characters(self):
         pass
     
