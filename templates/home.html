@@ -23,6 +23,14 @@
     </form>
 
     <div>
+        <form action="/characters/search" method="GET">
+            <label for="search">Search by Id:</label>
+            <input type="number" id="search" name="search">
+            <input type="submit" value="Search"><br><br>
+        </form>
+    </div>
+
+    <div>
         {% for character in characters %}
 
         <div>

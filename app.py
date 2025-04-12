@@ -58,6 +58,17 @@ def home(page=1):
                                limit=limit, skip=skip)
 
 
+@app.route('/characters/search') # endoint to return a character searched by Id
+def search_by_id():
+    id = request.args.get("search")
+    character_searched = storage.search_character_by_id(int(id)) # Using the function from Storage to get the character
+    if character_searched == None:
+        return "No Character found"
+    return render_template('search.html', character=character_searched)
+
+
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
