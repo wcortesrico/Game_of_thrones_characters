@@ -8,6 +8,33 @@ storage = Storage("characters.json")
 app = Flask(__name__)
 
 
+# this function retrieves a list of characters fitered according to their attributes
+def filter_char(list_characters, filters): # the variable filters expected as a dictionary of attributes
+    filtered =[]
+    for char in list_characters: 
+        for attribute, values in filters.items():
+            for value in values:
+                if char[attribute] == value:
+                    filtered.append(char)
+    return filtered
+
+# function that retrieves a list of characters sorted according to attribute and ordered
+def sorting_by(char_list, sort_by, order):
+    sorted_list = []
+    values_list = []
+    for char in char_list:
+        if char[sort_by] != None:
+            values_list.append(char[sort_by])
+    values_list.sort()
+    if order == "sort_des":
+        values_list.sort(reverse=True)
+    for value in values_list:
+        for char in char_list:
+            if char[sort_by] == value:
+                sorted_list.append(char)
+    return sorted_list
+
+
 @app.route('/characters')
 @app.route('/characters/page/<int:page>')
 def home(page=1):
@@ -79,16 +106,26 @@ def filters():
     attributes = storage.get_attributes_dictionary()
     age_more_than = request.args.get("age_more_than", default=None, type=int)
     age_less_than = request.args.get("age_less_than", default=None, type=int)
+    sort_by = request.args.get("sort_by")
+    order = request.args.get("order")
+    list_of_characters = storage.get_characters()
+
+
     selected_filters = {}
     for title in attributes:
         selected_values = request.args.getlist(title.lower())
         if selected_values:
             selected_filters[title.lower()] = selected_values
 
-    filtered_characters = storage.filter_char(selected_filters)
+    sorted_characters = sorting_by(list_of_characters, sort_by, order)
+
+    filtered_characters = filter_char(sorted_characters, selected_filters)
+
+
+
 
     if len(filtered_characters) == 0:
-        filtered_characters = storage.get_characters() # if no filter is selected, returns the complete list of characters
+        filtered_characters = sorted_characters # if no filter is selected, returns the complete list of characters
 
     #  Logic to apply the range of ages as a filter
     if age_less_than == None and age_more_than == None:

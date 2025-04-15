@@ -6,29 +6,20 @@ all_characters = storage.get_characters()
 all_attributes = storage.get_all_attributes()
 all_titles = storage.get_all_attributes_title()
 
-"""""
+def sort_by(char_list, sort_by, order):
+    sorted_list = []
+    values_list = []
+    for char in char_list:
+        if char[sort_by] != None:
+            values_list.append(char[sort_by])
+    values_list.sort()
+    if order == "sort_des":
+        values_list.sort(reverse=True)
+    for value in values_list:
+        for char in char_list:
+            if char[sort_by] == value:
+                sorted_list.append(char)
+    return sorted_list
+    
 
-attributes = {}
-# attributes["name"] = 
-
-for title in all_titles:
-    temp = []
-    for character in all_characters:
-        for attribute in all_attributes:
-            if character[title] == attribute and attribute not in temp:
-                temp.append(attribute)
-            attributes[title] = temp
-
-for attribute in attributes:
-    print(attribute)
-    for attr in attributes[attribute]:
-        print(attr)
-    print("")
-
-"""""
-
-retrieve_dic = {
-    "house": ["Targaryen", "Lannister"]
-}
-
-print(storage.filter_char(retrieve_dic))
+sort_by(all_characters, "house", "sort_asc")
