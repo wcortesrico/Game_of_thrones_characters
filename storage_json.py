@@ -70,6 +70,7 @@ class Storage(IStorage): # Storage object is used to managed the json file; stor
     def add_character(self, name, house, animal, symbol, nickname, role, age, death, strength ):
         list_of_characters = self.get_characters()
         max_id = 0
+        added = False
         for char in list_of_characters:
             if int(char["id"]) > max_id:
                 max_id = char["id"]
@@ -87,6 +88,19 @@ class Storage(IStorage): # Storage object is used to managed the json file; stor
             "strength": strength
         }
         list_of_characters.append(new_character)
+        added = True
+        if added:
+            try:
+                data_json = json.dumps(list_of_characters)
+                with open(self.file_path, "w") as new_file:
+                    new_file.write(data_json)
+                    return True
+            except Exception as e:
+                print(f"Error writing to file: {e}")
+                return False
+            return False
+
+
         data_json = json.dumps(list_of_characters)
         with open(self.file_path, "w") as new_file:
             new_file.write(data_json)
@@ -118,3 +132,21 @@ class Storage(IStorage): # Storage object is used to managed the json file; stor
                 return False
             return False
            
+    def delete_character(self, id):
+        list_of_characters = self.get_characters()
+        deleted = False
+        for char in list_of_characters:
+            if char["id"] == id:
+                list_of_characters.remove(char)
+                deleted = True
+                break
+        if deleted:
+            try:
+                data_json = json.dumps(list_of_characters)
+                with open(self.file_path, "w") as new_file:
+                    new_file.write(data_json)
+                    return True
+            except Exception as e:
+                print(f"Error writing to file: {e}")
+                return False
+            return False

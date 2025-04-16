@@ -13,6 +13,11 @@ class IStorage(ABC):
     def edit_character(self):
         pass
 
+    @abstractmethod
+    def delete_character(self):
+        pass
+
+    
 
 
     

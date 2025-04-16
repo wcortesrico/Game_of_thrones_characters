@@ -190,6 +190,15 @@ def edit_character(id):
                               request.form['strength'])            
         return redirect(url_for('home'))
     return render_template('edit_character.html', character=selected_character)
+
+@app.route('/characters/delete_character/<int:id>', methods=["GET", "POST"])
+def delete_character(id):
+    selected_character = storage.search_character_by_id(id)
+    if request.method == "POST":
+        storage.delete_character(id)
+        return redirect(url_for('home'))
+    return render_template('confirm_deletion.html', character=selected_character)
+
         
         
             
