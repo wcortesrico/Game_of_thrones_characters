@@ -56,6 +56,7 @@ class Storage(IStorage): # Storage object is used to managed the json file; stor
     
     # this function retrieves a list of characters fitered according to their attributes
     def filter_char(self, filters): # the variable filters spected as a dictionary of attributes
+
         list_characters = self.get_characters()
         filtered =[]
         for char in list_characters: 
@@ -64,3 +65,56 @@ class Storage(IStorage): # Storage object is used to managed the json file; stor
                     if char[attribute] == value:
                         filtered.append(char)
         return filtered
+    
+    # function that adds a new character to the list
+    def add_character(self, name, house, animal, symbol, nickname, role, age, death, strength ):
+        list_of_characters = self.get_characters()
+        max_id = 0
+        for char in list_of_characters:
+            if int(char["id"]) > max_id:
+                max_id = char["id"]
+        new_id = max_id + 1
+        new_character = {
+            "id": new_id,
+            "name": name,
+            "house": house,
+            "animal": animal,
+            "symbol": symbol,
+            "nickname": nickname,
+            "role": role,
+            "age": age,
+            "death": death,
+            "strength": strength
+        }
+        list_of_characters.append(new_character)
+        data_json = json.dumps(list_of_characters)
+        with open(self.file_path, "w") as new_file:
+            new_file.write(data_json)
+
+    def edit_character(self, id, name, house, animal, symbol, nickname, role, age, death, strength):
+        list_of_characters = self.get_characters()
+        updated = False
+        for char in list_of_characters:
+            if int(char["id"]) == id:
+                char["name"] = name
+                char["house"] = house
+                char["animal"] = animal
+                char["symbol"] = symbol
+                char["nickname"] = nickname
+                char["role"] = role
+                char["age"] = age
+                char["death"] = death
+                char["strength"] = strength
+                updated = True
+                break
+        if updated:
+            try:
+                data_json = json.dumps(list_of_characters)
+                with open(self.file_path, "w") as new_file:
+                    new_file.write(data_json)
+                    return True
+            except Exception as e:
+                print(f"Error writing to file: {e}")
+                return False
+            return False
+           

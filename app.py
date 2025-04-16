@@ -151,6 +151,54 @@ def filters():
             return "No results"
         return render_template('filters.html', characters=new_filtered_char)
 
+@app.route('/characters/add_character', methods=['GET', 'POST']) # endpoint to add a new character to the list
+def add_character():
+    if request.method == 'POST':
+        storage.add_character(request.form['name'],
+                              request.form['house'],
+                              request.form['animal'],
+                              request.form['symbol'],
+                              request.form['nickname'],
+                              request.form['role'],
+                              request.form['age'],
+                              request.form['death'],
+                              request.form['strength']
+                            )
+        return redirect(url_for('home'))
+    return render_template('add_character.html')
+
+@app.route('/characters/edit_character/<int:id>', methods=["GET", "POST"])
+def edit_character(id):
+    list_characters = storage.get_characters()
+    selected_character = {}
+    for char in list_characters:
+        if int(char.get("id")) == id:
+            selected_character = char
+            break
+    if request.method == "POST":
+        name = request.form['name']
+        print(name)
+        storage.edit_character(id,
+                              request.form['name'],
+                              request.form['house'],
+                              request.form['animal'],
+                              request.form['symbol'],
+                              request.form['nickname'],
+                              request.form['role'],
+                              request.form['age'],
+                              request.form['death'],
+                              request.form['strength'])            
+        return redirect(url_for('home'))
+    return render_template('edit_character.html', character=selected_character)
+        
+        
+            
+
+
+        
+        
+
+
     
 
 if __name__ == "__main__":
