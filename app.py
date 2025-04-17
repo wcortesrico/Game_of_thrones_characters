@@ -9,28 +9,29 @@ app = Flask(__name__)
 
 
 # this function retrieves a list of characters fitered according to their attributes
-def filter_char(list_characters, filters): # the variable filters expected as a dictionary of attributes
+def filter_char(list_characters, filters): # the variable filters is expected as a dictionary of attributes
     filtered =[]
     for char in list_characters: 
         for attribute, values in filters.items():
             for value in values:
-                if char[attribute] == value:
-                    filtered.append(char)
+                if char not in filtered:
+                    if char[attribute] == value:
+                        filtered.append(char)
     return filtered
 
-# function that retrieves a list of characters sorted according to attribute and ordered
-def sorting_by(char_list, sort_by, order):
+# function that retrieves a list of characters sorted according to the attributes and ordered
+def sorting_by(char_list, attribute, order):
     sorted_list = []
-    values_list = []
+    values_list = [] # list created to collect the values attributes 
     for char in char_list:
-        if char[sort_by] != None:
-            values_list.append(char[sort_by])
+        if char[attribute] != None:
+            values_list.append(char[attribute])
     values_list.sort()
     if order == "sort_des":
         values_list.sort(reverse=True)
     for value in values_list:
         for char in char_list:
-            if char[sort_by] == value:
+            if char[attribute] == value:
                 sorted_list.append(char)
     return sorted_list
 
@@ -93,7 +94,7 @@ def home(page=1):
                                selected_filters={})
 
 
-@app.route('/characters/search') # endoint to return a character searched by Id
+@app.route('/characters/search')
 def search_by_id():
     id = request.args.get("search")
     character_searched = storage.search_character_by_id(int(id)) # Using the function from Storage to get the character
@@ -101,7 +102,7 @@ def search_by_id():
         return "No Character found"
     return render_template('search.html', character=character_searched)
 
-@app.route('/characters/filters') # endpoint to return the filtered characters
+@app.route('/characters/filters')
 def filters():
     attributes = storage.get_attributes_dictionary()
     age_more_than = request.args.get("age_more_than", default=None, type=int)
@@ -110,19 +111,19 @@ def filters():
     order = request.args.get("order")
     list_of_characters = storage.get_characters()
 
-
     selected_filters = {}
     for title in attributes:
-        selected_values = request.args.getlist(title.lower())
+        selected_values = request.args.getlist(title.lower())# getting the list of attributes values selected from the filters
         if selected_values:
+            # creating a dictionary of attributes selected from the filters
             selected_filters[title.lower()] = selected_values
 
+    # getting the list of characters sorted from the filters 
     sorted_characters = sorting_by(list_of_characters, sort_by, order)
 
+    #getting the list of characters sorted and filtered
     filtered_characters = filter_char(sorted_characters, selected_filters)
-
-
-
+    print(filtered_characters)
 
     if len(filtered_characters) == 0:
         filtered_characters = sorted_characters # if no filter is selected, returns the complete list of characters
@@ -151,7 +152,7 @@ def filters():
             return "No results"
         return render_template('filters.html', characters=new_filtered_char)
 
-@app.route('/characters/add_character', methods=['GET', 'POST']) # endpoint to add a new character to the list
+@app.route('/characters/add_character', methods=['GET', 'POST'])
 def add_character():
     if request.method == 'POST':
         storage.add_character(request.form['name'],
@@ -176,8 +177,6 @@ def edit_character(id):
             selected_character = char
             break
     if request.method == "POST":
-        name = request.form['name']
-        print(name)
         storage.edit_character(id,
                               request.form['name'],
                               request.form['house'],
@@ -198,17 +197,7 @@ def delete_character(id):
         storage.delete_character(id)
         return redirect(url_for('home'))
     return render_template('confirm_deletion.html', character=selected_character)
-
-        
-        
-            
-
-
-        
-        
-
-
-    
+ 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
