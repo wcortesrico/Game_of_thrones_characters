@@ -1,11 +1,13 @@
 from flask import Flask, request, redirect, url_for, render_template
-from storage_json import Storage
+from data_manager.config import config
+from data_manager.storage_postgres import PostgreStorage
 import os
 import math
 import random
 
-relative_path = "data_manager/characters.json"
-storage = Storage(relative_path)
+
+params = config()
+storage = PostgreStorage(params)
 
 app = Flask(__name__)
 

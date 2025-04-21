@@ -1,11 +1,16 @@
 from configparser import ConfigParser
+import os
 
 # Parsing configuration data for PostgreSQL database
 def config(filename="database.ini", section="postgresql"):
     #create parser
     parser = ConfigParser()
+    
+    # Construct the absolut path to database.ini in the same directory
+    filepath = os.path.join(os.path.dirname(__file__), filename)
+
     #read config file
-    parser.read(filename)
+    parser.read(filepath)
     db ={}
     if parser.has_section(section):
         params = parser.items(section)
