@@ -1,9 +1,11 @@
 from flask import Flask, request, redirect, url_for, render_template
 from storage_json import Storage
+import os
 import math
 import random
 
-storage = Storage("characters.json")
+relative_path = "data_manager/characters.json"
+storage = Storage(relative_path)
 
 app = Flask(__name__)
 
