@@ -21,30 +21,26 @@ host=localhost
 database=GoT_characters
 user=postgres
 password=Postgrespassword
+```
 
-Important:
+## Important:
 
 - Adjust Credentials: Modify the host, database, user, and password values in database.ini to match your PostgreSQL server configuration.
 
 - Database Creation: Ensure that the database specified in the database.ini file (GoT_characters in this case) exists on your PostgreSQL server. You can create it using a PostgreSQL administration tool (like pgAdmin) or the psql command-line interface:
 
 SQL
+```ini
 CREATE DATABASE GoT_characters;
+```
 
-
-## Important:
-
-Adjust Credentials: Modify the host, database, user, and password values in database.ini to match your PostgreSQL server configuration.
-Database Creation: Ensure that the database specified in the database.ini file (GoT_characters in this case) exists on your PostgreSQL server. You can create it using a PostgreSQL administration tool (like pgAdmin) or the psql command-line interface:
-SQL
-
-CREATE DATABASE GoT_characters;
 
 
 ## Database Schema
 The application expects a table named characters with the following schema:
 
 SQL
+```ini
 CREATE TABLE characters (
     id SERIAL PRIMARY KEY,
     name TEXT,
@@ -57,6 +53,7 @@ CREATE TABLE characters (
     death TEXT,
     strength INTEGER
 );
+```
 
 You can execute this SQL statement using a PostgreSQL administration tool or the psql command-line interfce connected to your GoT_characters database. 
 
